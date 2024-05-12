@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
+
+import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { StreamingModule } from './modules/streaming/streaming.module';
 import { AgentModule } from './modules/agent/agent.module';
+import { StreamingModule } from './modules/streaming/streaming.module';
 
 @Module({
   imports: [ConfigModule.forRoot(), StreamingModule, AgentModule],
