@@ -1,10 +1,11 @@
-import { Inject } from '@nestjs/common';
-import winston from 'winston';
+import { Inject, Injectable } from '@nestjs/common';
+import * as winston from 'winston';
 
-import { AbstractLogger, LogData, LogLevel } from './interfaces/logger';
+import { AbstractLogger, LogData, LogLevel } from '../interfaces/logger';
 
 export const WinstonLoggerTransportsKey = Symbol();
 
+@Injectable()
 export default class WinstonLogger implements AbstractLogger {
   private logger: winston.Logger;
 

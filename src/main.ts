@@ -1,19 +1,17 @@
 import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { CustomLoggerService } from 'common/utils/logger';
 import * as compression from 'compression';
-import { AllExceptionsFilter } from 'filters/all-exception.filter';
-import { HttpExceptionFilter } from 'filters/bad-request.filter';
 import helmet from 'helmet';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './filters/all-exception.filter';
+import { HttpExceptionFilter } from './filters/bad-request.filter';
 
 async function bootstrap() {
   initializeTransactionalContext();
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: new CustomLoggerService(),
     cors: true,
   });
 
