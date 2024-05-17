@@ -6,10 +6,14 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import NestLoggerServiceAdapter from 'common/utils/logger/nestlogger-service-adapter';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    private readonly logger: NestLoggerServiceAdapter,
+  ) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const { httpAdapter } = this.httpAdapterHost;
@@ -23,6 +27,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    this.logger.error(exception.getResponse());
     const responseBody = {
       statusCode: httpStatus,
       timeStamp: new Date().toISOString(),

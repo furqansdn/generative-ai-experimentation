@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import NestLoggerServiceAdapter from 'common/utils/logger/nestlogger-service-adapter';
 import * as compression from 'compression';
 import helmet from 'helmet';
 import { initializeTransactionalContext } from 'typeorm-transactional';
@@ -15,6 +16,9 @@ async function bootstrap() {
     cors: true,
   });
 
+  const logger = app.get(NestLoggerServiceAdapter);
+  app.useLogger(logger);
+
   app.use(helmet());
 
   app.use(compression());
@@ -24,7 +28,7 @@ async function bootstrap() {
   const httpAdapter = app.get(HttpAdapterHost);
 
   app.useGlobalFilters(
-    new AllExceptionsFilter(httpAdapter),
+    new AllExceptionsFilter(httpAdapter, logger),
     new HttpExceptionFilter(reflector),
   );
 

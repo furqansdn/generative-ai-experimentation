@@ -20,8 +20,8 @@ export class HttpExceptionFilter
     const statusCode = exception.getStatus();
     const r = exception.getResponse() as { message: ValidationError[] };
 
-    // const validationError = r.message;
-    console.log('get here');
+    const validationError = r.message;
+    console.log(validationError);
 
     return response.status(statusCode).json(r);
   }

@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { INQUIRER } from '@nestjs/core';
 
-// import { INQUIRER } from '@nestjs/core';
 // import { ConfigService } from 'shared/service/config.service';
 import ContextStorageService from '../context-storage/context-storage.service';
 import { ContextStorageServiceKey } from '../context-storage/interfaces/context-storage.interface';
@@ -11,7 +11,7 @@ import {
   LogLevel,
 } from './interfaces/logger';
 
-@Injectable()
+@Injectable({ scope: Scope.TRANSIENT })
 export default class LoggerService {
   private sourceClass: string;
   private organization: string;
@@ -20,13 +20,11 @@ export default class LoggerService {
 
   constructor(
     @Inject(LoggerBaseKey) private logger: AbstractLogger,
-    // @Inject(INQUIRER) protected parentClass: object,
+    @Inject(INQUIRER) protected parentClass: object,
     @Inject(ContextStorageServiceKey)
     private contextStorageService: ContextStorageService,
   ) {
-    this.sourceClass = 'jancuk';
-
-    console.log(this.sourceClass);
+    this.sourceClass = parentClass?.constructor?.name;
 
     this.organization = 'HOTD';
     this.context = 'HR Backend APPS';

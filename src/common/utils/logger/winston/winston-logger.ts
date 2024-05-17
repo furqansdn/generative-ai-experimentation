@@ -35,7 +35,6 @@ export default class WinstonLogger implements AbstractLogger {
         winston.format.errors({ stack: true }),
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         winston.format((info, _opts) => {
-          console.log('this is info on transport', info);
           if (info.error && info.error instanceof Error) {
             info.stack = info.error.stack;
             info.error = undefined;
