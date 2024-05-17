@@ -3,8 +3,6 @@ import { ContextStorageModule } from 'common/utils/context-storage/context-stora
 import { LoggerModule } from 'common/utils/logger/logger.module';
 import { SharedModule } from 'shared/shared.module';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AgentModule } from './modules/agent/agent.module';
 import { StreamingModule } from './modules/streaming/streaming.module';
 
@@ -16,7 +14,7 @@ import { StreamingModule } from './modules/streaming/streaming.module';
     SharedModule,
     ContextStorageModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

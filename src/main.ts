@@ -1,9 +1,17 @@
-import { ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  HttpStatus,
+  UnprocessableEntityException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import NestLoggerServiceAdapter from 'common/utils/logger/nestlogger-service-adapter';
 import * as compression from 'compression';
 import helmet from 'helmet';
+import { setupSwagger } from 'setup-swagger';
+import { ConfigService } from 'shared/service/config.service';
+import { SharedModule } from 'shared/shared.module';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
 import { AppModule } from './app.module';
@@ -32,8 +40,32 @@ async function bootstrap() {
     new HttpExceptionFilter(reflector),
   );
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
 
-  await app.listen(3000);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      transform: true,
+      dismissDefaultMessages: true,
+      exceptionFactory: (errors) => new UnprocessableEntityException(errors),
+    }),
+  );
+
+  const configService = app.select(SharedModule).get(ConfigService);
+
+  const appSetting = configService.appSetting;
+
+  if (appSetting.enabledDocumentation) {
+    setupSwagger(app);
+  }
+  if (!configService.isDevelopment) {
+    app.enableShutdownHooks();
+  }
+
+  await app.listen(appSetting.port);
+  console.info(`server running on ${await app.getUrl()}`);
+
+  return app;
 }
 bootstrap();

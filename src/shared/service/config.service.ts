@@ -7,6 +7,13 @@ import { isNil } from 'lodash';
 export class ConfigService {
   constructor(private configService: NestConfigService) {}
 
+  get appSetting() {
+    return {
+      port: this.getNumber('PORT'),
+      enabledDocumentation: this.getString('ENABLED_DOCUMENTATION'),
+    };
+  }
+
   get mssqlConfig(): TypeOrmModuleOptions {
     const entities = [
       __dirname + '/../../modules/**/*.entity{.ts,.js}',
